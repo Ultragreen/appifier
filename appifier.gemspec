@@ -1,13 +1,13 @@
 
 Gem::Specification.new do |spec|
-  spec.name          = "template"
+  spec.name          = "appifier"
   spec.version       = `cat VERSION`.chomp
-  spec.authors       = ["Pierre Alphonse", "Camille Paquet", "Romain GEORGES"]
+  spec.authors       = ["Camille Paquet", "Romain GEORGES"]
   spec.email         = ["gems@ultragreen.net"]
 
-  spec.summary       = "GEM TEMPLATE"
-  spec.description   = "GEM TEMPLATE"
-  spec.homepage      = "https://github.com/Ultragreen/gem-template"
+  spec.summary       = "Appifier : Applications templating and management tools "
+  spec.description   = "Appifier : Applications templating and management tools "
+  spec.homepage      = "https://github.com/Ultragreen/appifier"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 

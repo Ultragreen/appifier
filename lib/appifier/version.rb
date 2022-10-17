@@ -1,4 +1,4 @@
 require 'version'
-module Template
+module Appifier
   VERSION = Version.current
 end
