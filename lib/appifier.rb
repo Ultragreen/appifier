@@ -37,8 +37,14 @@ module Appifier
     def generate(dry_run: false )
       puts 'Running in dry_run' if dry_run
       calculate
-      generate_folders dry_run: dry_run
-      
+      unless check_folder_already_exist then
+        puts 'Generate folders'
+        generate_folders dry_run: dry_run
+        puts 'Generate files'
+        generate_files dry_run: dry_run
+      else
+        puts 'Folders and files already exist'
+      end
     end
 
     def calculate
@@ -48,12 +54,38 @@ module Appifier
 
     private
 
+    def check_folder_already_exist
+      File.directory?("#{@target_root}/#{@target_folders.first}")
+    end
+
     def generate_folders(dry_run:)
       puts "Target path to create in #{@target_root} :"
       @target_folders.each do |path|
-        action = (dry_run)? '[skipped]' : '[OK]'
+        action = (dry_run)? '[SKIPPED]' : '[OK]'
         FileUtils.mkdir_p "#{@target_root}/#{path}", noop: dry_run
         puts "#{action} #{path}"
+      end
+    end
+
+    def generate_files(dry_run:)
+      puts "Target files to create in #{@target_root} :"
+      @src_files.each_with_index do |path, index|
+        if dry_run
+          result = "[SKIPPED]"
+        else
+          begin
+            template = Template::new strict:false, 
+              list_token: @data.keys, 
+              template_file: path
+            template.map(@data)
+            content = template.output
+            File.open("#{@target_root}/#{@target_files[index]}", 'w') { |file| file.write(content) }
+            result = "[OK]"
+          rescue InvalidTokenList, NotAToken, NoTemplateFile
+            result = "[KO]"
+          end
+        end
+        puts "#{result} #{@target_files[index]}"
       end
     end
 
@@ -71,7 +103,8 @@ module Appifier
           list_token: @data.keys, 
           template_content: folder.delete_prefix("#{@src_root}/" )
         template.map(@data)
-        target.push template.output
+        output = template.output
+        target.push output unless target.include? output
       end
     
     end
@@ -86,7 +119,5 @@ end
 
 
 test = Appifier::Generator::new src_root: "/tmp/appifier/skeleton", target_root: "/tmp/appifier"
-# test.generate
-test.calculate
-pp test.target_folders
-pp test.target_files
+test.generate dry_run: false
+
