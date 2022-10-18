@@ -22,7 +22,8 @@ module Appifier
 
       @src_root = src_root
       @target_root = target_root
-
+      @target_folders = []
+      @target_files = []
       @data = {appname: 'test'}
 
       @src_paths = Dir.glob("#{@src_root}/**/*", File::FNM_DOTMATCH) 
@@ -37,11 +38,12 @@ module Appifier
       puts 'Running in dry_run' if dry_run
       calculate
       generate_folders dry_run: dry_run
-  
+      
     end
 
     def calculate
-      calculate_folders
+      calculate_target type: :folder
+      calculate_target type: :file
     end
 
     private
@@ -56,15 +58,22 @@ module Appifier
     end
 
 
-    def calculate_folders
-      @target_folders = []
-      @src_folders.each do |folder| 
+    def calculate_target(type:)
+      if type == :folder then
+        target = @target_folders
+        src = @src_folders
+      else
+        target = @target_files
+        src = @src_files
+      end
+      src.each do |folder| 
         template = Template::new strict:false, 
           list_token: @data.keys, 
           template_content: folder.delete_prefix("#{@src_root}/" )
         template.map(@data)
-        @target_folders.push template.output
+        target.push template.output
       end
+    
     end
 
   end
@@ -77,5 +86,7 @@ end
 
 
 test = Appifier::Generator::new src_root: "/tmp/appifier/skeleton", target_root: "/tmp/appifier"
-test.generate
-
+# test.generate
+test.calculate
+pp test.target_folders
+pp test.target_files
