@@ -1,3 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'appifier'
+
+require 'appifier/cli'
+
+include Appifier::CLI
+
+Command.start(ARGV)
