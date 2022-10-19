@@ -9,9 +9,11 @@ Gem::Specification.new do |spec|
   spec.description   = "Appifier : Applications templating and management tools "
   spec.homepage      = "https://github.com/Ultragreen/appifier"
   spec.license       = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
 
   spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata['source_code_uri'] = spec.homepage
+  spec.metadata['changelog_uri'] = spec.homepage
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -29,5 +31,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'code_statistics', '~> 0.2.13'
   spec.add_development_dependency "yard", "~> 0.9.27"
   spec.add_development_dependency "yard-rspec", "~> 0.1"
-  spec.add_development_dependency'version', '~> 1.1'
+  spec.add_development_dependency 'version', '~> 1.1'
+  spec.metadata['rubygems_mfa_required'] = 'false'
+  spec.add_dependency "carioca", "~> 2.0"
+
 end

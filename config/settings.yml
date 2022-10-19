@@ -1,0 +1,7 @@
+---
+:appifier:
+  :production: {}
+  :staging: {}
+  :development: {}
+  :test: {}
+  :default: {}

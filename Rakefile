@@ -6,6 +6,7 @@ require 'code_statistics'
 require 'yard'
 require 'yard/rake/yardoc_task.rb'
 require 'rubocop/rake_task'
+require "carioca/rake/manage"
 
 RuboCop::RakeTask.new
 

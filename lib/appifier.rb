@@ -5,46 +5,57 @@ require 'thot'
 require 'fileutils'
 
 include Thot
+
+
+Carioca::Registry.configure do |spec|
+  spec.init_from_file = false
+  spec.debug = true if ENV['DEBUG']
+  spec.log_file = '/tmp/appifier.log'
+  spec.config_file = './config/settings.yml'
+  spec.config_root = :appifier
+  spec.environment = :production
+  spec.default_locale = :fr
+  spec.locales_load_path << Dir[File.expand_path('./config/locales') + '/*.yml']
+end
 module Appifier
-  class Error < StandardError; end
+
+  class Application < Carioca::Container
+    inject service: :configuration
+    inject service: :i18n
+    logger.info(to_s) { 'Running Appifier' }
+  end
 
   class Generator
 
       attr_reader :src_paths
       attr_reader :src_files
       attr_reader :src_folders
-
       attr_reader :target_folders
       attr_reader :target_files
 
 
     def initialize(src_root: , target_root:)
-
       @src_root = src_root
       @target_root = target_root
       @target_folders = []
       @target_files = []
       @data = {appname: 'test'}
-
       @src_paths = Dir.glob("#{@src_root}/**/*", File::FNM_DOTMATCH) 
       @src_paths.delete_if {|file| file =~ /\/\.$/}
       @src_folders = @src_paths.select{|item| File::directory? item }
       @src_files = @src_paths.select{|item| File::file? item }
-
     end
 
 
-    def generate(dry_run: false )
+    def generate(dry_run: false, force: false )
       puts 'Running in dry_run' if dry_run
       calculate
-      unless check_folder_already_exist then
-        puts 'Generate folders'
-        generate_folders dry_run: dry_run
-        puts 'Generate files'
-        generate_files dry_run: dry_run
-      else
-        puts 'Folders and files already exist'
-      end
+      puts 'Folders and files already exist' && return false if check_folder_already_exist and !force
+      FileUtils.rm_rf("#{@target_root}/#{@target_folders.first}") if force 
+      puts 'Generate folders'
+      generate_folders dry_run: dry_run
+      puts 'Generate files'
+      generate_files dry_run: dry_run
     end
 
     def calculate
