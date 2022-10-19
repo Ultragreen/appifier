@@ -1,9 +1,11 @@
+
+
 AllCops:
   NewCops: enable
   SuggestExtensions: false
   Exclude:
-    - 'spec/template_spec.rb'
-
+    - 'samples/**/*'
+    - 'spec/**/*'
 
 
 # definitive :
@@ -28,3 +30,55 @@ Metrics/MethodLength:
   Enabled: false
 Metrics/PerceivedComplexity:
   Enabled: false
+
+
+
+# Offense count: 2
+# Configuration parameters: AllowKeywordBlockArguments.
+Lint/UnderscorePrefixedVariableName:
+  Exclude:
+    - 'lib/appifier/helpers/gem.rb'
+
+# Offense count: 1
+Lint/UselessAssignment:
+  Exclude:
+    - 'lib/appifier.rb'
+
+# Offense count: 1
+# Configuration parameters: NamePrefix, ForbiddenPrefixes, AllowedMethods, MethodDefinitionMacros.
+# NamePrefix: is_, has_, have_
+# ForbiddenPrefixes: is_, has_, have_
+# AllowedMethods: is_a?
+# MethodDefinitionMacros: define_method, define_singleton_method
+Naming/PredicateName:
+  Exclude:
+
+    - 'lib/appifier/helpers/user.rb'
+
+# Offense count: 1
+Security/Open:
+  Exclude:
+    - 'lib/appifier/helpers/archives.rb'
+
+# Offense count: 12
+# Configuration parameters: AllowedConstants.
+Style/Documentation:
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+    - 'lib/appifier.rb'
+    - 'lib/appifier/actors/generator.rb'
+    - 'lib/appifier/actors/retriever.rb'
+    - 'lib/appifier/cli/configuration.rb'
+    - 'lib/appifier/cli/templates.rb'
+    - 'lib/appifier/helpers/archives.rb'
+    - 'lib/appifier/helpers/gem.rb'
+    - 'lib/appifier/helpers/templates.rb'
+    - 'lib/appifier/helpers/user.rb'
+    - 'lib/appifier/setup.rb'
+
+# Offense count: 2
+Style/MixinUsage:
+  Exclude:
+    - 'exe/appifier'
+    - 'lib/appifier.rb'
