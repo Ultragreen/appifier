@@ -7,4 +7,4 @@ require 'appifier/cli'
 
 include Appifier::CLI
 
-Command.start(ARGV)
+MainCommand.start(ARGV)

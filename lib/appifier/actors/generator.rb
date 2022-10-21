@@ -5,6 +5,10 @@ module Appifier
     class Generator
       attr_reader :src_paths, :src_files, :src_folders, :target_folders, :target_files
 
+      extend Carioca::Injector
+      inject service: :output
+      inject service: :terminator
+
       def initialize(src_root:, target_root:)
         @src_root = src_root
         @target_root = target_root
@@ -15,19 +19,20 @@ module Appifier
         @src_paths.delete_if { |file| file =~ %r{/\.$} }
         @src_folders = @src_paths.select { |item| File.directory? item }
         @src_files = @src_paths.select { |item| File.file? item }
+        raise 'Application template not found' unless File.exist?(src_root)
       end
 
       def generate(dry_run: false, force: false)
-        puts 'Running in dry_run' if dry_run
+        output.info 'Running in dry_run (operation will be SKIPPED)' if dry_run
         calculate
         if check_folder_already_exist && !force
-          puts 'Folders and files already exist'
+          output.error 'Folders and files already exist'
           return false
         end
         FileUtils.rm_rf("#{@target_root}/#{@target_folders.first}") if force
-        puts 'Generate folders'
+        output.info 'Generate folders'
         generate_folders dry_run: dry_run
-        puts 'Generate files'
+        output.info 'Generate files'
         generate_files dry_run: dry_run
       end
 
@@ -43,19 +48,19 @@ module Appifier
       end
 
       def generate_folders(dry_run:)
-        puts "Target path to create in #{@target_root} :"
+        output.info "Target path to create in #{@target_root} :"
         @target_folders.each do |path|
-          action = dry_run ? '[SKIPPED]' : '[OK]'
+          action = dry_run ? :skipped : :ok
           FileUtils.mkdir_p "#{@target_root}/#{path}", noop: dry_run
-          puts "#{action} #{path}"
+          output.send action, "#{path}"
         end
       end
 
       def generate_files(dry_run:)
-        puts "Target files to create in #{@target_root} :"
+        output.info "Target files to create in #{@target_root} :"
         @src_files.each_with_index do |path, index|
           if dry_run
-            result = '[SKIPPED]'
+            result = :skipped
           else
             begin
               template = Template.new strict: false,
@@ -64,12 +69,12 @@ module Appifier
               template.map(@data)
               content = template.output
               File.write("#{@target_root}/#{@target_files[index]}", content)
-              result = '[OK]'
+              result = :ok
             rescue InvalidTokenList, NotAToken, NoTemplateFile
-              result = '[KO]'
+              result = :ko
             end
           end
-          puts "#{result} #{@target_files[index]}"
+          output.send result,"#{@target_files[index]}"
         end
       end
 

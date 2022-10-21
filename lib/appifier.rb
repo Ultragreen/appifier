@@ -28,20 +28,28 @@ unless File.exist? File.expand_path(Appifier::DEFAULT_CONFIG_PATH)
 end
 
 Carioca::Registry.configure do |spec|
-  spec.init_from_file = false
+  spec.filename = './config/appifier.registry'
+  spec.init_from_file = true
   spec.debug = true if ENV['DEBUG']
   spec.log_file = '/tmp/appifier.log'
   spec.config_file = './config/settings.yml'
   spec.config_root = :appifier
   spec.environment = :production
   spec.default_locale = :fr
+  spec.output_mode = :dual
+  spec.output_emoji = true
+  spec.output_colors = true
   spec.locales_load_path << Dir["#{File.expand_path('./config/locales')}/*.yml"]
 end
+
+require_relative 'appifier/services/init'
 
 module Appifier
   class Application < Carioca::Container
     inject service: :configuration
     inject service: :i18n
+    inject service: :terminator
     logger.info(to_s) { 'Running Appifier' }
   end
 end
+

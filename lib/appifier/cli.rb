@@ -1,14 +1,25 @@
-# frozen_string_literal: true
+# frozen_string_literal: false
 
 require 'appifier'
 require 'thor'
+
+require_relative 'commands/init'
+
+
 
 Dir["#{File.dirname(__FILE__)}/cli/*.rb"].sort.each { |file| require file }
 
 module Appifier
   module CLI
     # The CLI Command structure for Thor
-    class Command < Thor
+    class MainCommand < Thor
+
+
+      def initialize(*args)
+        super
+        @output = Carioca::Registry.get.get_service name: :output
+      end
+
       # callback for managing ARGV errors
       def self.exit_on_failure?
         true
@@ -31,11 +42,11 @@ module Appifier
       option :force, type: :boolean, aliases: '-F'
       def generate(template, target = '.')
         source = "#{File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)}/#{template}"
-        if File.exist?(source)
+        begin
           generator = Appifier::Actors::Generator.new src_root: source, target_root: File.expand_path(target)
           generator.generate dry_run: options[:simulate], force: options[:force]
-        else
-          puts 'Application template not found'
+        rescue RuntimeError => e
+          @output.error e.message
         end
       end
 
@@ -47,9 +58,13 @@ module Appifier
       LONGDESC
       option :type, type: :string, aliases: '-t', default: 'git'
       def retrieve(origin)
-        type = options[:type].to_sym
-        retriever = Appifier::Actors::Retriever.new type: type, origin: origin
-        retriever.get
+        begin
+          type = options[:type].to_sym
+          retriever = Appifier::Actors::Retriever.new type: type, origin: origin
+          retriever.get
+        rescue RuntimeError => e
+          @output.error e.message
+        end
       end
     end
   end

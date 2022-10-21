@@ -1,0 +1,10 @@
+---
+:terminator:
+  :type: :internal
+  :description: The Terminator service
+  :service: Appifier::Services::Terminator
+  :depends:
+  - :configuration
+  - :logger
+  - :i18n
+  - :output

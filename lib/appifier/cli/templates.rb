@@ -7,15 +7,13 @@ module Appifier
         # Thor method : list availables templates in user bundle
         desc 'ls', 'list templates availables in user bundle'
         def ls
-          puts "List of avaible templates for user : #{current_user} :"
-          list_bundled_templates
+          Appifier::Commands::Templates::list
         end
 
         # Thor method : remove a template from user bundle
         desc 'rm', 'rm templates from user bundle'
         def rm(template)
-          puts "Removing template #{template} for user : #{current_user} :"
-          rm_bundled_template(template)
+          Appifier::Commands::Templates::rm(template)
         end
       end
     end
