@@ -23,10 +23,10 @@ module Appifier
             FileUtils.rm_rf "#{template_path}/#{template}"
             output.ok "Template #{template} deleted of bundle for user #{current_user}"
           else
-            output.ko "Template #{template} not found in bundle for user #{current_user}"
+            raise "Template #{template} not found in bundle for user #{current_user}"
           end
         rescue Errno::ENOENT
-          output.ko "Template #{template} not found in bundle for user #{current_user}"
+          raise "Template #{template} not found in bundle for user #{current_user}"
         end
       end
     end

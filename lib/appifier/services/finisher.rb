@@ -5,7 +5,7 @@ module Appifier
 
   module Services
     # Exiter namespace
-    class Terminator
+    class Finisher
 
       extend Carioca::Injector
       inject service: :configuration

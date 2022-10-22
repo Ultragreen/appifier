@@ -18,6 +18,7 @@ module Appifier
       def initialize(*args)
         super
         @output = Carioca::Registry.get.get_service name: :output
+        @finisher = Carioca::Registry.get.get_service name: :finisher
       end
 
       # callback for managing ARGV errors
@@ -45,8 +46,10 @@ module Appifier
         begin
           generator = Appifier::Actors::Generator.new src_root: source, target_root: File.expand_path(target)
           generator.generate dry_run: options[:simulate], force: options[:force]
+          @finisher.terminate exit_case: :quiet_exit
         rescue RuntimeError => e
           @output.error e.message
+          @finisher.terminate exit_case: :error_exit
         end
       end
 
@@ -62,8 +65,10 @@ module Appifier
           type = options[:type].to_sym
           retriever = Appifier::Actors::Retriever.new type: type, origin: origin
           retriever.get
+          @finisher.terminate exit_case: :quiet_exit
         rescue RuntimeError => e
           @output.error e.message
+          @finisher.terminate exit_case: :error_exit
         end
       end
     end

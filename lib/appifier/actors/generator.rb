@@ -7,7 +7,7 @@ module Appifier
 
       extend Carioca::Injector
       inject service: :output
-      inject service: :terminator
+
 
       def initialize(src_root:, target_root:)
         @src_root = src_root
@@ -25,10 +25,7 @@ module Appifier
       def generate(dry_run: false, force: false)
         output.info 'Running in dry_run (operation will be SKIPPED)' if dry_run
         calculate
-        if check_folder_already_exist && !force
-          output.error 'Folders and files already exist'
-          return false
-        end
+         raise 'Folders and files already exist'  if check_folder_already_exist && !force
         FileUtils.rm_rf("#{@target_root}/#{@target_folders.first}") if force
         output.info 'Generate folders'
         generate_folders dry_run: dry_run

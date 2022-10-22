@@ -14,7 +14,7 @@
         :message: Options incompatibility
         :code: 40
       :service_dependence_missing:
-        :message: Splash Service dependence missing
+        :message: Appifier Service dependence missing
         :code: 60
       :config_required:
         :message: Specific configuration required

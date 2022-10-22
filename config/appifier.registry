@@ -1,10 +1,9 @@
 ---
-:terminator:
+:finisher:
   :type: :internal
-  :description: The Terminator service
-  :service: Appifier::Services::Terminator
+  :description: The Finisher service
+  :service: Appifier::Services::Finisher
   :depends:
   - :configuration
   - :logger
-  - :i18n
   - :output

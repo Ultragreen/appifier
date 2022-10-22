@@ -4,16 +4,29 @@ module Appifier
   module CLI
     module Subcommands
       class Templates < ::Thor
+
+        def initialize(*args)
+          super
+          @output = Carioca::Registry.get.get_service name: :output
+          @finisher = Carioca::Registry.get.get_service name: :finisher
+        end
+
         # Thor method : list availables templates in user bundle
         desc 'ls', 'list templates availables in user bundle'
         def ls
           Appifier::Commands::Templates::list
+          @finisher.terminate exit_case: :error_exit
         end
 
         # Thor method : remove a template from user bundle
         desc 'rm', 'rm templates from user bundle'
         def rm(template)
-          Appifier::Commands::Templates::rm(template)
+          begin 
+            Appifier::Commands::Templates::rm(template)
+          rescue RuntimeError => e
+            @output.error e.message
+            @finisher.terminate exit_case: :error_exit
+          end 
         end
       end
     end
