@@ -1,0 +1,12 @@
+---
+:template:
+  :dataset:
+    :appname:
+      :description: The application name
+      :default: test_application
+      :format: \w+
+:actions:
+  :deploy: {}
+  :run: {}
+  :build: {}
+  :publish: {}

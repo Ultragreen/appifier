@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Appifier
-  module Commands
+  module Components
     class Templates
 
       extend Carioca::Injector

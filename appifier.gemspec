@@ -36,4 +36,5 @@ Gem::Specification.new do |spec|
   spec.metadata['rubygems_mfa_required'] = 'false'
   spec.add_dependency 'carioca', '~> 2.0.9'
   spec.add_dependency 'thor', '~> 1.2'
+  spec.add_dependency 'tty-prompt', '~> 0.23.1'
 end

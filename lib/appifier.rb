@@ -11,20 +11,21 @@ include Thot
 require 'appifier/version'
 require 'appifier/helpers/init'
 
-Appifier::Helpers.constants.select { |c| Appifier::Helpers.const_get(c).is_a? Module }
-                 .map { |item| item = "Appifier::Helpers::#{item}" }
-                 .each { |mod| include Object.const_get(mod) }
-
-
 module Appifier
   DEFAULT_PATH = '~/.appifier'
   DEFAULT_TEMPLATES_PATH = "#{DEFAULT_PATH}/templates"
   DEFAULT_CONFIG_PATH = "#{DEFAULT_PATH}/config/"
   DEFAULT_LOGS_PATH = "#{DEFAULT_PATH}/logs" 
+  DEFAULT_DATASETS_PATH = "#{DEFAULT_PATH}/datasets"
   DEFAULT_LOG_FILENAME = "appifier.log"
   DEFAULT_SETTINGS_FILENAME = "settings.yml"
   DEFAULT_REGISTRY  = "config/appifier.registry"
 end
+
+Appifier::Helpers.constants.select { |c| Appifier::Helpers.const_get(c).is_a? Module }
+                 .map { |item| item = "Appifier::Helpers::#{item}" }
+                 .each { |mod| include Object.const_get(mod) }
+
 
 require 'appifier/setup'
 require 'appifier/actors/init'
@@ -57,3 +58,4 @@ module Appifier
   end
 end
 
+require_relative 'appifier/components/init'

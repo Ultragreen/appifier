@@ -9,12 +9,12 @@ module Appifier
       inject service: :output
 
 
-      def initialize(src_root:, target_root:)
+      def initialize(src_root:, target_root:, dataset: )
         @src_root = src_root
         @target_root = target_root
         @target_folders = []
         @target_files = []
-        @data = { appname: 'test' }
+        @data = dataset
         @src_paths = Dir.glob("#{@src_root}/**/*", File::FNM_DOTMATCH)
         @src_paths.delete_if { |file| file =~ %r{/\.$} }
         @src_folders = @src_paths.select { |item| File.directory? item }

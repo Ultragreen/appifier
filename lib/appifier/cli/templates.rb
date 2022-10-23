@@ -14,7 +14,7 @@ module Appifier
         # Thor method : list availables templates in user bundle
         desc 'ls', 'list templates availables in user bundle'
         def ls
-          Appifier::Commands::Templates::list
+          Appifier::Components::Templates::list
           @finisher.terminate exit_case: :error_exit
         end
 
@@ -22,7 +22,7 @@ module Appifier
         desc 'rm', 'rm templates from user bundle'
         def rm(template)
           begin 
-            Appifier::Commands::Templates::rm(template)
+            Appifier::Components::Templates::rm(template)
           rescue RuntimeError => e
             @output.error e.message
             @finisher.terminate exit_case: :error_exit
