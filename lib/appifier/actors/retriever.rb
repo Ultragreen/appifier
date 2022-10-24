@@ -1,18 +1,27 @@
 # frozen_string_literal: false
-
+require 'git'
+require 'uri'
 module Appifier
   module Actors
     module Retrivers
       class Git
-        def self.get(origin:, destination:); 
-          raise 'not yest implemented'
+        def self.get(origin:, destination:)
+          uri = URI.parse(origin)
+          path = uri.path
+          name = File.basename(path, ".git") 
+          raise "Git URL format failed (only http bare git format)" if name.include?('.')
+          ::Git.clone(origin, nil, path: destination)
+          return name
         end
       end
 
       class Archive
         def self.get(origin:, destination:)
           raise "Archive : #{origin} not found" unless File::exist? origin
+          name = File.basename(origin, ".tgz") 
+          raise "Template name format failed : must be .tgz file" if name.include?('.')
           untar_gz archive: origin, destination: destination
+          return name
         end
       end
     end
@@ -31,7 +40,10 @@ module Appifier
       end
 
       def get
-        TYPE[@type].get origin: @origin, destination: @destination
+        template = TYPE[@type].get origin: @origin, destination: @destination
+        result = Appifier::Components::Templates::Template.validate!(template: template)
+        Appifier::Components::Templates.rm(template) unless result[:error].empty? 
+        return result
       end
     end
   end

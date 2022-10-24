@@ -1,5 +1,10 @@
 ---
 :template:
+  :name: dummy
+  :authors:
+    - Romain Georges
+    - Camille Paquet
+  :description: dummy template
   :dataset:
     :appname:
       :description: The application name

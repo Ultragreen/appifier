@@ -49,13 +49,4 @@ Carioca::Registry.configure do |spec|
 end
 
 require_relative 'appifier/services/init'
-
-module Appifier
-  class Application < Carioca::Container
-    inject service: :configuration
-    inject service: :i18n
-    inject service: :terminator
-  end
-end
-
 require_relative 'appifier/components/init'

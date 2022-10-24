@@ -70,7 +70,11 @@ module Appifier
         begin
           type = options[:type].to_sym
           retriever = Appifier::Actors::Retriever.new type: type, origin: origin
-          retriever.get
+          results = retriever.get
+          [:error, :warning].each do |level|
+            results[level].each { |value| @output.send level, "#{level.to_s} : #{value}" }
+          end
+          results[:cleaned].each { |value| @output.ok "cleaned : #{value}" }
           @finisher.terminate exit_case: :quiet_exit
         rescue RuntimeError => e
           @output.error e.message

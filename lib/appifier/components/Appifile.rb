@@ -6,8 +6,11 @@ module Appifier
 
             def initialize(path:)
                 @path = path
-                @content = {}
-                openfile
+                begin
+                    @content = open_yaml filename: @path
+                rescue RuntimeError
+                    raise "Appifile missing"
+                end
             end
 
             def dataset_rules
@@ -18,17 +21,17 @@ module Appifier
                 @content[:actions]
             end
 
-            private 
-            def openfile
-                raise 'Appifile not foud' unless File::exist? @path
+            def self.validate!(path:)
+                appifile = {}
+                res = {status: :ok, warning: [], error: [], cleaned: []}
                 begin
-                  @content = YAML.load_file(@path)
-                rescue StandardError => e
-                  raise e.message
+                    appifile = open_yaml filename: path
+                rescue RuntimeError 
+                    res[:error].push "Appifile missing"
                 end
-
-
+                return res
             end
+
         end
     end
 end
