@@ -1,28 +1,10 @@
+require 'schash'
+
 module Appifier
     module Components
         class Appifile
 
             attr_reader :content
-
-
-            APPFILE_FORMAT = {
-                  template: {
-                    authors: optional(array_of(string)),
-                    description: optional(string),
-                    dataset: hash,
-                    actions: {
-                        deploy: optional(hash),
-                        run: optional(hash),
-                        build: optional(hash),
-                        publish: optional(hash),
-                        test: optional(hash)
-                    },
-                  },
-                }
-            
-
-
-
 
             def initialize(path:)
                 @path = path
@@ -43,7 +25,7 @@ module Appifier
 
             def self.validate!(path:)
                 appifile = {}
-                res = {status: :ok, warning: [], error: [], cleaned: []}
+                res = {status: :ok, warn: [], error: [], cleaned: []}
                 begin
                     appifile = open_yaml filename: path
 
@@ -56,6 +38,8 @@ module Appifier
                     {
                         template: {
                           authors: optional(array_of(string)),
+                          version: numeric,
+                          contact: optional(string), 
                           description: optional(string),
                           dataset: {
                            
@@ -72,7 +56,7 @@ module Appifier
                       
                   end
                 result = validator.validate(appifile)
-                result.each {|item| res[:error].push "//#{item.position.join('/')} #{item.message}"}
+                result.each {|item| res[:error].push "Appifiler : //#{item.position.join('/')} #{item.message}"}
 
                 return res
             end

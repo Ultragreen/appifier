@@ -36,9 +36,9 @@ module Appifier
             end
           end
           result[:error].push "Skeleton path missing" unless File.exist?("#{path}/skeleton")
-          result[:warning].push "README missing" unless File.exist?("#{path}/README.md")
+          result[:warn].push "README.md missing" unless File.exist?("#{path}/README.md")
           result[:status] = :ok
-          result[:status] = :partial unless result[:warning].empty?
+          result[:status] = :partial unless result[:warn].empty?
           result[:status] = :ko unless result[:error].empty?
           return result
         end
@@ -53,7 +53,7 @@ module Appifier
       end
 
       def self.rm(template)
-        output.info "Removing template #{template} for user : #{current_user} :"
+        output.info "Removing template #{template} for user : #{current_user}"
         template_path = File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)
         begin
           if File::exist? "#{template_path}/#{template}"

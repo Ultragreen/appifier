@@ -71,10 +71,12 @@ module Appifier
           type = options[:type].to_sym
           retriever = Appifier::Actors::Retriever.new type: type, origin: origin
           results = retriever.get
-          [:error, :warning].each do |level|
+          @output.info "Detail of notifications : " unless results[:error].empty? and results[:warn].empty? and results[:cleaned].empty?
+          [:error, :warn].each do |level|
             results[level].each { |value| @output.send level, "#{level.to_s} : #{value}" }
           end
           results[:cleaned].each { |value| @output.ok "cleaned : #{value}" }
+          @finisher.terminate exit_case: :error_exit unless results[:error].empty?
           @finisher.terminate exit_case: :quiet_exit
         rescue RuntimeError => e
           @output.error e.message

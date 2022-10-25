@@ -1,14 +1,13 @@
 ---
 :template:
   :name: dummy
-  :version: 1.0
   :authors:
     - Romain Georges
     - Camille Paquet
-  :description: a dummy template
+  :description: dummy template
   :dataset:
     :appname:
-      :description: application name
+      :description: The application name
       :default: test_application
       :format: \w+
 :actions:
