@@ -41,10 +41,10 @@ module Appifier
 
       def get
         template = TYPE[@type].get origin: @origin, destination: @destination
-        result = Appifier::Components::Templates::Template.validate!(template: template)
+        result = Appifier::Components::Template.validate!(template: template)
         unless result[:error].empty?
           output.ko "Template #{template} retrieving cancelled" 
-          Appifier::Components::Templates.rm(template) unless result[:error].empty?
+          Appifier::Components::Template.rm(template) unless result[:error].empty?
 
         end 
         return result

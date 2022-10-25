@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'tty-markdown'
 module Appifier
   module CLI
     module Subcommands
@@ -14,7 +14,7 @@ module Appifier
         # Thor method : list availables templates in user bundle
         desc 'ls', 'list templates availables in user bundle'
         def ls
-          Appifier::Components::Templates::list
+          Appifier::Components::Template::list
           @finisher.terminate exit_case: :quiet_exit
         end
 
@@ -22,8 +22,50 @@ module Appifier
         desc 'rm', 'rm templates from user bundle'
         def rm(template)
           begin 
-            Appifier::Components::Templates::rm(template)
+            Appifier::Components::Template::rm(template)
             @output.info "Template #{template} removed" 
+            @finisher.terminate exit_case: :quiet_exit
+          rescue RuntimeError => e
+            @output.error e.message
+            @finisher.terminate exit_case: :error_exit
+          end 
+        end
+
+        # Thor method : show information for a specific template in user bundle
+        desc 'show', 'show information for a specific template in user bundle'
+        def show(template)
+          begin
+            Appifier::Components::Template::show(template)
+            temp = Appifier::Components::Template::new(template: template)
+            if temp.readme?
+              puts " "
+              puts TTY::Markdown.parse_file(temp.readme_path)
+            end
+
+            @finisher.terminate exit_case: :quiet_exit
+          rescue RuntimeError => e
+            @output.error e.message
+            @finisher.terminate exit_case: :error_exit
+          end 
+        end
+
+        # Thor method : display directory tree view for a specific template in user bundle
+        desc 'treeview', 'display directory tree view for a specific template in user bundle'
+        def treeview(template)
+          begin
+            Appifier::Components::Template::treeview(template)
+            @finisher.terminate exit_case: :quiet_exit
+          rescue RuntimeError => e
+            @output.error e.message
+            @finisher.terminate exit_case: :error_exit
+          end 
+        end
+
+        # Thor method : lint a specific template in user bundle
+        desc 'lint', 'Lint a specific template in user bundle'
+        def lint(template)
+          begin
+            Appifier::Components::Template::lint(template)
             @finisher.terminate exit_case: :quiet_exit
           rescue RuntimeError => e
             @output.error e.message
