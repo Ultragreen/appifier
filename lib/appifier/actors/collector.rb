@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require "tty-prompt"
+
 
 module Appifier
   module Actors

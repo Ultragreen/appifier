@@ -1,7 +1,6 @@
 # frozen_string_literal: false
 
 require 'appifier'
-require 'thor'
 
 Dir["#{File.dirname(__FILE__)}/cli/*.rb"].sort.each { |file| require file }
 
@@ -29,10 +28,11 @@ module Appifier
       subcommand 'configuration', Subcommands::Configuration
 
       # Thor method : running of Appifier generate
-      desc 'generate TEMPLATE [TARGET]', 'Generate application from bundled template'
+      desc 'generate TEMPLATE [TARGET]', 'Generate application from bundled template (IF TARGET ommited use the current path as ROOTPATH)'
       long_desc <<-LONGDESC
             Generate application from bundled template\n
-            with --simulate, only simulate folders and files installed
+            (IF TARGET ommited use the current path as ROOTPATH)\n
+            with --simulate, only simulate folders and files installed\n
             with --force, force regeneration of application, remove old files [DANGER]
       LONGDESC
       option :simulate, type: :boolean, aliases: '-s'
@@ -45,8 +45,17 @@ module Appifier
           dataset = open_dataset(template: template)
           @output.info "Dataset file found for #{template}"
         else
-          @output.ko "Dataset file not found for #{template}"
-          @finisher.terminate exit_case: :error_exit
+          @output.warn "Dataset file not found for #{template}"
+          if TTY::Prompt.new.yes?("Do you want to collect dataset interactively ?")
+            @output.info "Beginning interactive Dataset input for #{template}"
+            collector = Appifier::Actors::Collector.new template: template
+            collector.collect 
+            dataset = open_dataset(template: template)
+          else
+            puts "=> Exiting run 'appifier collect #{template}' for collecting data"
+            puts " (use -S for collecting from STDIN or -f <FILE>)  "
+            @finisher.terminate exit_case: :quiet_exit
+          end
         end
 
         begin
@@ -88,8 +97,8 @@ module Appifier
       desc 'collect TEMPLATE', 'Collect dataset for an application template in user templates bundle'
       long_desc <<-LONGDESC
             Collect dataset for an application template in user templates bundle\n
-            with --force => force collect, and destroy previous Dataset [DANGER]
-            with --file FILENAME get data from à YAML File
+            with --force => force collect, and destroy previous Dataset [DANGER]\n
+            with --file FILENAME get data from à YAML File\n
             with --stdin get data from STDIN
 
       LONGDESC

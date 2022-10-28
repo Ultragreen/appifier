@@ -5,6 +5,11 @@ require 'thot'
 require 'fileutils'
 require 'etc'
 
+
+require 'thor'
+require "tty-prompt"
+require 'tty-link'
+
 include Thot
 
 
@@ -14,7 +19,7 @@ require 'appifier/helpers/init'
 module Appifier
   DEFAULT_PATH = '~/.appifier'
   DEFAULT_TEMPLATES_PATH = "#{DEFAULT_PATH}/templates"
-  DEFAULT_CONFIG_PATH = "#{DEFAULT_PATH}/config/"
+  DEFAULT_CONFIG_PATH = "#{DEFAULT_PATH}/config"
   DEFAULT_LOGS_PATH = "#{DEFAULT_PATH}/logs" 
   DEFAULT_DATASETS_PATH = "#{DEFAULT_PATH}/datasets"
   DEFAULT_LOG_FILENAME = "appifier.log"

@@ -42,4 +42,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "schash","~> 0.1.2"
   spec.add_dependency "tty-tree", "~> 0.4.0"
   spec.add_dependency "tty-markdown", "~> 0.7.0"
+  spec.add_dependency "tty-link", "~> 0.1.1"
 end
