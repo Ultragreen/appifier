@@ -14,16 +14,20 @@ module Appifier
         # Thor method : list availables templates in user bundle
         desc 'ls', 'list templates availables in user bundle'
         def ls
-          Appifier::Components::Template::list
-          @finisher.terminate exit_case: :quiet_exit
+          begin
+            Appifier::Components::Template::list
+            @finisher.terminate exit_case: :quiet_exit
+          rescue RuntimeError => e
+            @output.error e.message
+            @finisher.terminate exit_case: :error_exit
+          end 
         end
 
         # Thor method : remove a template from user bundle
-        desc 'rm', 'rm templates from user bundle'
+        desc 'rm TEMPLATE', 'Remove templates from user bundle'
         def rm(template)
           begin 
             Appifier::Components::Template::rm(template)
-            @output.info "Template #{template} removed" 
             @finisher.terminate exit_case: :quiet_exit
           rescue RuntimeError => e
             @output.error e.message
@@ -32,7 +36,7 @@ module Appifier
         end
 
         # Thor method : show information for a specific template in user bundle
-        desc 'show', 'show information for a specific template in user bundle'
+        desc 'show TEMPLATE', 'show information for a specific template in user bundle'
         def show(template)
           begin
             Appifier::Components::Template::show(template)
@@ -50,7 +54,7 @@ module Appifier
         end
 
         # Thor method : display directory tree view for a specific template in user bundle
-        desc 'treeview', 'display directory tree view for a specific template in user bundle'
+        desc 'treeview TEMPLATE', 'display directory tree view for a specific template in user bundle'
         def treeview(template)
           begin
             Appifier::Components::Template::treeview(template)
@@ -62,7 +66,7 @@ module Appifier
         end
 
         # Thor method : lint a specific template in user bundle
-        desc 'lint', 'Lint a specific template in user bundle'
+        desc 'lint TEMPLATE', 'Lint a specific template in user bundle'
         def lint(template)
           begin
             Appifier::Components::Template::lint(template)

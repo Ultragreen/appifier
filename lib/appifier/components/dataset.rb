@@ -34,10 +34,23 @@ module Appifier
             end
 
 
-            def self.show
+            def self.show(dataset)
+                raise "Not yet Implemented"
             end
 
-            def self.rm
+            def self.rm(dataset)
+                output.info "Removing dataset #{dataset} for user : #{current_user}"
+                dataset_path = File.expand_path(Appifier::DEFAULT_DATASETS_PATH)
+                begin
+                if File::exist? "#{dataset_path}/#{dataset}.yml"
+                    FileUtils.rm_rf "#{dataset_path}/#{dataset}.yml"
+                    output.ok "Dataset #{dataset} deleted of bundle for user #{current_user}"
+                else
+                    raise "Dataset #{dataset} not found in bundle for user #{current_user}"
+                end
+                rescue Errno::ENOENT
+                    raise "Dataset #{dataset} not found in bundle for user #{current_user}"
+                end
             end
 
 

@@ -13,13 +13,42 @@ module Appifier
           # Thor method : list availables datasets in user bundle
           desc 'ls', 'list defined datasets in user bundle'
           def ls
-            Appifier::Components::Dataset::list
-            @finisher.terminate exit_case: :quiet_exit
+            begin
+                Appifier::Components::Dataset::list
+                @finisher.terminate exit_case: :quiet_exit
+            rescue RuntimeError => e
+                @output.error e.message
+                @finisher.terminate exit_case: :error_exit
+            end 
           end
+
+          # Thor method : show a specific dataset in user bundle
+          desc 'show DATASET', 'show a specific dataset in user bundle'
+          def show(dataset)
+            begin
+                Appifier::Components::Dataset::show dataset
+                @finisher.terminate exit_case: :quiet_exit
+            rescue RuntimeError => e
+                @output.error e.message
+                @finisher.terminate exit_case: :error_exit
+            end 
+          end
+
+          # Thor method : remove a dataset from user bundle
+          desc 'rm DATASET', 'Remove dataset from user bundle'
+          def rm(dataset)
+            begin 
+                Appifier::Components::Dataset::rm(dataset)
+                 @finisher.terminate exit_case: :quiet_exit
+            rescue RuntimeError => e
+                @output.error e.message
+                @finisher.terminate exit_case: :error_exit
+            end 
+         end
 
 
           # Thor method : Prune orphans datasets in user bundle
-          desc 'ls', 'Prune orphans datasets in user bundle'
+          desc 'prune', 'Prune orphans datasets in user bundle'
           long_desc <<-LONGDESC
             Prune orphans datasets in user bundle\n
             with --force, force pruning of dataset [DANGER]
