@@ -52,7 +52,7 @@ module Appifier
       end
       
       def self.list
-        output.info "List of avaible templates for user : #{current_user} :"
+        output.info "List of available templates for user : #{current_user} :"
         template_path = File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)
         Dir.glob("#{template_path}/*").map { |item| item.delete_prefix("#{template_path}/") }.each do |template|
           output.item "#{template}"

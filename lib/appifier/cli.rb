@@ -21,6 +21,9 @@ module Appifier
         true
       end
 
+      desc 'datasets SUBCOMMAND ...ARGS', 'Managing apps datasets'
+      subcommand 'datasets', Subcommands::Datasets
+
       desc 'templates SUBCOMMAND ...ARGS', 'Managing apps templates'
       subcommand 'templates', Subcommands::Templates
 

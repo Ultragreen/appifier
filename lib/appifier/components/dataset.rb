@@ -1,0 +1,47 @@
+module Appifier
+    module Components
+        class Dataset
+
+            extend Carioca::Injector
+            inject service: :output
+    
+
+            def self.list
+                output.info "List of available Datasets for user : #{current_user} :"
+                templates_path = File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)
+                datasets_path = File.expand_path(Appifier::DEFAULT_DATASETS_PATH)
+                templates = Dir.glob("#{templates_path}/*").map { |item| item.delete_prefix("#{templates_path}/") }
+                Dir.glob("#{datasets_path}/*").map { |item| item.delete_prefix("#{datasets_path}/") }.each do |file|
+                    dataset = File::basename(file,'.yml')
+                    res = dataset; res << " [TEMPLATE MISSING]" unless templates.include? dataset 
+                    output.item res
+                end
+            end
+
+
+            def self.prune
+                output.info "Pruning Datasets for user : #{current_user} :"
+                templates_path = File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)
+                datasets_path = File.expand_path(Appifier::DEFAULT_DATASETS_PATH)
+                templates = Dir.glob("#{templates_path}/*").map { |item| item.delete_prefix("#{templates_path}/") }
+                Dir.glob("#{datasets_path}/*").each do |file|
+                    dataset = File::basename(file,'.yml')
+                    unless templates.include? dataset 
+                        FileUtils::rm file 
+                        output.item "Pruned : #{dataset}"
+                    end
+                end
+            end
+
+
+            def self.show
+            end
+
+            def self.rm
+            end
+
+
+
+        end
+    end
+end
