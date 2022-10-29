@@ -7,6 +7,7 @@ module Appifier
       
       extend Carioca::Injector
       inject service: :output
+      inject service: :finisher
       
       attr_accessor :dataset
       attr_reader :template
@@ -19,22 +20,25 @@ module Appifier
     
     
       def collect
-                
-        appifilename = "#{File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)}/#{template}/Appifile"
-        appifile = Appifier::Components::Appifile::new path: appifilename
-        prompt = TTY::Prompt.new
-        @dataset = {}
-        appifile.dataset_rules.each do |name, rule|
-          default = (rule[:default])? rule[:default] : ""
-          @dataset[name] = prompt.ask("Give #{rule[:description]} : ", default: default) do |q|
-            q.required true
-            q.validate Regexp.new(rule[:format]) if rule[:format]
-          end 
+        begin         
+          appifilename = "#{File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)}/#{template}/Appifile"
+          appifile = Appifier::Components::Appifile::new path: appifilename
+          prompt = TTY::Prompt.new
+          @dataset = {}
+          appifile.dataset_rules.each do |name, rule|
+            default = (rule[:default])? rule[:default] : ""
+            @dataset[name] = prompt.ask("Give #{rule[:description]} : ", default: default) do |q|
+              q.required true
+              q.validate Regexp.new(rule[:format]) if rule[:format]
+            end 
+          end
+          write_dataset template: @template, data: @dataset
+          @collected  = true
+          output.info "Dataset recorded for #{@template}" 
+        rescue TTY::Reader::InputInterrupt
+          output.warn "Interactive collect interrupted"
+          finisher.terminate exit_case: :interrupt
         end
-        write_dataset template: @template, data: @dataset
-        @collected  = true
-        output.info "Dataset recorded for #{@template}" 
-
       end 
       
       def collected? 

@@ -9,8 +9,9 @@ module Appifier
       inject service: :output
 
 
-      def initialize(src_root:, target_root:, dataset: )
-        @src_root = src_root
+      def initialize(template_root:, target_root:, dataset: )
+        @template_root = template_root
+        @src_root = "#{template_root}/skeleton"
         @target_root = target_root
         @target_folders = []
         @target_files = []
@@ -19,7 +20,7 @@ module Appifier
         @src_paths.delete_if { |file| file =~ %r{/\.$} }
         @src_folders = @src_paths.select { |item| File.directory? item }
         @src_files = @src_paths.select { |item| File.file? item }
-        raise 'Application template not found' unless File.exist?(src_root)
+        raise 'Application template not found' unless File.exist?(@template_root)
       end
 
       def generate(dry_run: false, force: false)
@@ -31,6 +32,7 @@ module Appifier
         generate_folders dry_run: dry_run
         output.info 'Generate files'
         generate_files dry_run: dry_run
+        copy_appifile dry_run: dry_run
       end
 
       def calculate
@@ -52,6 +54,15 @@ module Appifier
           output.send action, "#{path}"
         end
       end
+
+
+      def copy_appifile(dry_run:)
+        output.info "Copy Appifile in #{@target_root} :"
+        action = dry_run ? :skipped : :ok
+        FileUtils.cp "#{@template_root}/Appifile", @target_root unless dry_run
+        output.send action, "Install Appifile"
+      end
+
 
       def generate_files(dry_run:)
         output.info "Target files to create in #{@target_root} :"

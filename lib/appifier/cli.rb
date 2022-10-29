@@ -39,27 +39,34 @@ module Appifier
       option :force, type: :boolean, aliases: '-F'
       def generate(template, target = '.')
         root = "#{File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)}/#{template}"
-        source  = "#{root}/skeleton"
-        
+        unless File::exist? root 
+          @output.error "Template not found #{template}"
+          @finisher.terminate exit_case: :error_exit
+        end
         if File::exist? File::expand_path("#{DEFAULT_DATASETS_PATH}/#{template}.yml") then
           dataset = open_dataset(template: template)
           @output.info "Dataset file found for #{template}"
         else
-          @output.warn "Dataset file not found for #{template}"
-          if TTY::Prompt.new.yes?("Do you want to collect dataset interactively ?")
-            @output.info "Beginning interactive Dataset input for #{template}"
-            collector = Appifier::Actors::Collector.new template: template
-            collector.collect 
-            dataset = open_dataset(template: template)
-          else
-            puts "=> Exiting run 'appifier collect #{template}' for collecting data"
-            puts " (use -S for collecting from STDIN or -f <FILE>)  "
-            @finisher.terminate exit_case: :quiet_exit
+          begin 
+            @output.warn "Dataset file not found for #{template}"
+            if TTY::Prompt.new.yes?("Do you want to collect dataset interactively ?")
+              @output.info "Beginning interactive Dataset input for #{template}"
+              collector = Appifier::Actors::Collector.new template: template
+              collector.collect 
+              dataset = open_dataset(template: template)
+            else
+              puts "=> Exiting run 'appifier collect #{template}' for collecting data"
+              puts " (use -S for collecting from STDIN or -f <FILE>)  "
+              @finisher.terminate exit_case: :quiet_exit
+            end
+          rescue TTY::Reader::InputInterrupt
+            @output.warn "Command interrupted"
+            @finisher.terminate exit_case: :interrupt
           end
         end
 
         begin
-          generator = Appifier::Actors::Generator.new src_root: source, target_root: File.expand_path(target), dataset: dataset
+          generator = Appifier::Actors::Generator.new template_root: root, target_root: File.expand_path(target), dataset: dataset
           generator.generate dry_run: options[:simulate], force: options[:force]
           @finisher.terminate exit_case: :quiet_exit
         rescue RuntimeError => e
