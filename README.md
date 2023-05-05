@@ -2,6 +2,27 @@
 
 Appifier : Applications templating and management tools 
 
+
+![GitHub](https://img.shields.io/github/license/Ultragreen/appifier)
+
+[![Documentation](https://img.shields.io/badge/docs-rubydoc.info-brightgreen)](https://rubydoc.info/gems/appifier)
+![GitHub issues](https://img.shields.io/github/issues/Ultragreen/appifier)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/Ultragreen/appifier)
+![GitHub top language](https://img.shields.io/github/languages/top/Ultragreen/appifier)
+![GitHub milestones](https://img.shields.io/github/milestones/open/Ultragreen/appifier)
+
+![Gem](https://img.shields.io/gem/dt/appifier)
+[![Gem Version](https://badge.fury.io/rb/sc4ry.svg)](https://badge.fury.io/rb/appifier)
+![Twitter Follow](https://img.shields.io/twitter/follow/Ultragreen?style=social)
+![GitHub Org's stars](https://img.shields.io/github/stars/Ultragreen?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/Ultragreen/appifier?style=social)
+
+<noscript><a href="https://liberapay.com/ruydiaz/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
+
+
+![Sc4ry logo](assets/images/logo_appifier_full_large.png) 
+_Applications templating and management tools_
+
 ## Installation
 
     $ gem install appifier
@@ -9,6 +30,11 @@ Appifier : Applications templating and management tools
 ## Usage
 
 Appifier : Manage your applications templates, build, deploy, publish any type of application (CLI, web, etc...) in any languages with any facilities.  
+
+
+## Process
+
+![Appifier process](assets/images/description_appifier.png) 
 
 ## Development
 
