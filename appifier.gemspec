@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'carioca', '~> 2.0.9'
   spec.add_dependency 'thor', '~> 1.2'
   spec.add_dependency 'tty-prompt', '~> 0.23.1'
-  spec.add_dependency "thot", "~> 1.0"
+  spec.add_dependency "thot", "~> 1.2.1"
   spec.add_dependency "git", "~> 1.12"
   spec.add_dependency "schash","~> 0.1.2"
   spec.add_dependency "tty-tree", "~> 0.4.0"
