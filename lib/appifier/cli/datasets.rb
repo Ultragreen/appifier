@@ -58,6 +58,18 @@ module Appifier
             end 
          end
 
+          # Thor method : edit a dataset in a text editor
+          desc 'edit DATASET', 'Edit a dataset in a text editor'
+          def edit(dataset)
+            begin 
+                Appifier::Components::Dataset::edit(dataset)
+                 @finisher.terminate exit_case: :quiet_exit
+            rescue RuntimeError => e
+                @output.error e.message
+                @finisher.terminate exit_case: :error_exit
+            end 
+         end
+
 
           # Thor method : Prune orphans datasets in user bundle
           desc 'prune', 'Prune orphans datasets in user bundle'

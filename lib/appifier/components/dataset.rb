@@ -99,6 +99,27 @@ module Appifier
                     raise "Dataset #{dataset} not found in bundle"
                 end
             end
+
+            def self.edit(dataset)
+                output.info "Edit dataset #{dataset}"
+                dataset_path = File.expand_path(Appifier::DEFAULT_DATASETS_PATH)
+                appifilename = "#{File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)}/#{dataset}/Appifile"
+                if File::exist? "#{dataset_path}/#{dataset}.yml"
+                    editor_command = ENV['EDITOR'] || "vim"
+                    if editor_command.nil? || editor_command.empty?
+                    puts "The $EDITOR environment variable is not set."
+                    else
+                    pid = Process.fork do
+                        if !system("#{editor_command} #{dataset_path}/#{dataset}.yml")
+                            output.error "Editor #{editor_command} not found. You can set up the EDITOR environment variable and retry the command."
+                        end
+                    end
+                    Process.wait(pid) if pid
+                    end
+                else
+                    raise "Dataset #{dataset} not found in bundle"
+                end
+            end
         end
     end
 end
