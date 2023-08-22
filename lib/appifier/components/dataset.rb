@@ -66,8 +66,39 @@ module Appifier
                 end
             end
 
+            def self.update(dataset)
+                output.info "Updating dataset #{dataset}"
+                dataset_path = File.expand_path(Appifier::DEFAULT_DATASETS_PATH)
+                appifilename = "#{File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)}/#{dataset}/Appifile"
+                if File::exist? "#{dataset_path}/#{dataset}.yml"
+                    appifile = Appifier::Components::Appifile::new path: appifilename
+                    begin
+                        prompt = TTY::Prompt.new
+                        data = {}
+                        terminate = false
+                        while terminate === false
+                            selected_value = prompt.select("What do you want to update ? ", appifile.dataset_rules.keys.push('terminate'))
+                            if selected_value == 'terminate'
+                                terminate = true
+                                output.ok "Dataset #{dataset} updated"
+                            else
+                                dataset_file_content = YAML.load_file("#{dataset_path}/#{dataset}.yml")
+                                rule = appifile.dataset_rules.fetch(selected_value)
+                                data[selected_value] = prompt.ask("Give #{rule[:description]} : ", default: dataset_file_content[selected_value]) do |q|
+                                    q.required true
+                                    q.validate Regexp.new(rule[:format]) if rule[:format]
+                                end 
+                                write_dataset template: dataset, data: data
+                            end
+                        end
 
-
+                    rescue Errno::ENOENT
+                        raise "Dataset #{dataset} not found in bundle"
+                    end
+                else
+                    raise "Dataset #{dataset} not found in bundle"
+                end
+            end
         end
     end
 end

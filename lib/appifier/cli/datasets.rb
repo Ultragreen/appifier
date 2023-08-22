@@ -46,6 +46,18 @@ module Appifier
             end 
          end
 
+          # Thor method : update a dataset in user bundle
+          desc 'update DATASET', 'Update a dataset in user bundle'
+          def update(dataset)
+            begin 
+                Appifier::Components::Dataset::update(dataset)
+                 @finisher.terminate exit_case: :quiet_exit
+            rescue RuntimeError => e
+                @output.error e.message
+                @finisher.terminate exit_case: :error_exit
+            end 
+         end
+
 
           # Thor method : Prune orphans datasets in user bundle
           desc 'prune', 'Prune orphans datasets in user bundle'
