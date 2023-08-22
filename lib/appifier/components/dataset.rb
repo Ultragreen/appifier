@@ -4,7 +4,6 @@ module Appifier
 
             extend Carioca::Injector
             inject service: :output
-    
 
             def self.list
                 output.info "List of available Datasets for user : #{current_user} :"
@@ -35,7 +34,21 @@ module Appifier
 
 
             def self.show(dataset)
-                raise "Not yet Implemented"
+                output.info "Dataset #{dataset} informations"
+                dataset_path = File.expand_path(Appifier::DEFAULT_DATASETS_PATH)
+                begin
+                if File::exist? "#{dataset_path}/#{dataset}.yml"
+                    File.open("#{dataset_path}/#{dataset}.yml", 'r') do |file|
+                        file.each_line do |line|
+                        output.item line
+                        end
+                    end
+                else
+                    raise "Dataset #{dataset} not found in bundle for user #{current_user}"
+                end
+                rescue Errno::ENOENT
+                    raise "Dataset #{dataset} not found in bundle for user #{current_user}"
+                end
             end
 
             def self.rm(dataset)

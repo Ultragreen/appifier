@@ -26,7 +26,7 @@ module Appifier
       def generate(dry_run: false, force: false)
         output.info 'Running in dry_run (operation will be SKIPPED)' if dry_run
         calculate
-         raise 'Folders and files already exist'  if check_folder_already_exist && !force
+        raise 'Folders and files already exist'  if check_folder_already_exist && !force
         FileUtils.rm_rf("#{@target_root}/#{@target_folders.first}") if force
         output.info 'Generate folders'
         generate_folders dry_run: dry_run
@@ -95,12 +95,12 @@ module Appifier
           src = @src_files
         end
         src.each do |folder|
-          template = Template.new strict: false,
-                                  list_token: @data.keys,
-                                  template_content: folder.delete_prefix("#{@src_root}/")
-          template.map(@data)
-          output = template.output
-          target.push output unless target.include? output
+            template = Template.new strict: false,
+                                    list_token: @data.keys,
+                                    template_content: folder.delete_prefix("#{@src_root}/")
+            template.map(@data)
+            output = template.output
+            target.push output unless target.include? output
         end
       end
     end
