@@ -112,6 +112,8 @@ module Appifier
                     pid = Process.fork do
                         if !system("#{editor_command} #{dataset_path}/#{dataset}.yml")
                             output.error "Editor #{editor_command} not found. You can set up the EDITOR environment variable and retry the command."
+                        else 
+                            output.ok "Update dataset #{dataset} done"
                         end
                     end
                     Process.wait(pid) if pid
