@@ -24,10 +24,13 @@ module Appifier
           appifilename = "#{File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)}/#{template}/Appifile"
           appifile = Appifier::Components::Appifile::new path: appifilename
           prompt = TTY::Prompt.new
-          @dataset = {}
+          @dataset = {
+            template: template,
+            data: {}
+          }
           appifile.dataset_rules.each do |name, rule|
             default = (rule[:default])? rule[:default] : ""
-            @dataset[name] = prompt.ask("Give #{rule[:description]} : ", default: default) do |q|
+            @dataset[:data][name] = prompt.ask("Give #{rule[:description]} : ", default: default) do |q|
               q.required true
               q.validate Regexp.new(rule[:format]) if rule[:format]
             end 

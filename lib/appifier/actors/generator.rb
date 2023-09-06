@@ -15,7 +15,7 @@ module Appifier
         @target_root = target_root
         @target_folders = []
         @target_files = []
-        @data = dataset
+        @data = dataset.data
         @src_paths = Dir.glob("#{@src_root}/**/*", File::FNM_DOTMATCH)
         @src_paths.delete_if { |file| file =~ %r{/\.$} }
         @src_folders = @src_paths.select { |item| File.directory? item }

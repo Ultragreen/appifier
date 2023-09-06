@@ -74,7 +74,6 @@ module Appifier
                     appifile = Appifier::Components::Appifile::new path: appifilename
                     begin
                         prompt = TTY::Prompt.new
-                        data = {}
                         terminate = false
                         while terminate === false
                             selected_value = prompt.select("What do you want to update ? ", appifile.dataset_rules.keys.push('terminate'))
@@ -83,8 +82,9 @@ module Appifier
                                 output.ok "Dataset #{dataset} updated"
                             else
                                 dataset_file_content = YAML.load_file("#{dataset_path}/#{dataset}.yml")
+                                data = dataset_file_content
                                 rule = appifile.dataset_rules.fetch(selected_value)
-                                data[selected_value] = prompt.ask("Give #{rule[:description]} : ", default: dataset_file_content[selected_value]) do |q|
+                                data[:data][selected_value] = prompt.ask("Give #{rule[:description]} : ", default: dataset_file_content[selected_value]) do |q|
                                     q.required true
                                     q.validate Regexp.new(rule[:format]) if rule[:format]
                                 end 
