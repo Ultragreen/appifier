@@ -42,6 +42,7 @@ module Appifier
       option :force, type: :boolean, aliases: '-F'
       def generate(template, target = '.')
         root = "#{File.expand_path(Appifier::DEFAULT_TEMPLATES_PATH)}/#{template}"
+        target = target === '.' ? "./#{template}" : target
         unless File::exist? root 
           @output.error "Template not found #{template}"
           @finisher.terminate exit_case: :error_exit

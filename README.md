@@ -36,6 +36,98 @@ Appifier : Manage your applications templates, build, deploy, publish any type o
 
 ![Appifier process](assets/images/description_appifier.png) 
 
+## Simple usecase
+
+### Retrieve a template from repository
+
+    $ appifier retrieve https://github.com/AppifierTemplates/sinatra_template_appifier.git
+
+### Collect and generate the application from template
+
+You can build the application wherever you want.
+You need to populate your datasets in order to generate the application with good values.
+
+    $ appifier generate sinatra_template_appifier .
+    ⚠ Dataset file not found for sinatra_template_appifier
+    Do you want to collect dataset interactively ? Yes
+    ℹ Beginning interactive Dataset input for sinatra_template_appifier
+    Give application name :  (Application)
+
+# Functionalities
+
+## TEMPLATE
+
+### Retrieve a template from repository
+
+    $ appifier retrieve https://github.com/AppifierTemplates/sinatra_template_appifier.git
+
+### Retrieve a template from archive
+
+    $ appifier retrieve -t archive sinatra_template_appifier.tgz
+
+### Collect datasets for a template
+
+    $ appifier collect sinatra_template_appifier
+    ℹ Beginning interactive Dataset input for sinatra_template_appifier
+    Give application name :  Application
+    Give application namespace :  Namespace
+    ℹ Dataset recorded for sinatra_template_appifier
+
+### Generate application from template
+
+    $ appifier generate sinatra_template_appifier
+
+### List all templates
+
+    $ appifier templates ls
+
+### Show a template
+
+    $ appifier templates show sinatra_template_appifier
+
+### Delete a template
+
+    $ appifier templates rm sinatra_template_appifier
+
+### Lint a template 
+
+    $ appifier templates lint sinatra_template_appifier
+
+### Display tree view of a template
+
+    $ appifier templates treeview sinatra_template_appifier
+
+## DATASETS
+
+### Show a dataset
+
+    $ appifier datasets show sinatra_template_appifier
+
+### List all datasets
+
+    $ appifier datasets ls
+
+### Edit a dataset
+
+VIM is the default editor.
+If you want a specific editor you can export the EDITOR environment variable with the launch command of your editor. 
+
+    $ appifier datasets edit sinatra_template_appifier
+
+### Update a dataset
+
+You can modify the data you want interactively.
+
+    $ appifier datasets update sinatra_template_appifier
+
+### Delete a dataset
+
+    $ appifier datasets rm sinatra_template_appifier
+
+### Delete orphans datasets
+
+    $ appifier datasets prune
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
